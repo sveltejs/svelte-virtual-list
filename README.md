@@ -15,26 +15,26 @@ yarn add @sveltejs/svelte-virtual-list
 <VirtualList items={{things}} component={{RowComponent}} />
 
 <script>
-	import VirtualList from '@sveltejs/svelte-virtual-list';
-	import RowComponent from './RowComponent.html';
+  import VirtualList from '@sveltejs/svelte-virtual-list';
+  import RowComponent from './RowComponent.html';
 
-	export default {
-		components: { VirtualList },
+  export default {
+    components: { VirtualList },
 
-		data() {
-			return {
-				things: [
-					// these can be any values you like
-					{ name: 'one', value: 1 },
-					{ name: 'two', value: 2 },
-					{ name: 'three', value: 3 },
-					// ...
-					{ name: 'six thousand and ninety-two', value: 6092 }
-				],
-				RowComponent
-			};
-		}
-	};
+    data() {
+      return {
+        things: [
+          // these can be any values you like
+          { name: 'one', value: 1 },
+          { name: 'two', value: 2 },
+          { name: 'three', value: 3 },
+          // ...
+          { name: 'six thousand and ninety-two', value: 6092 }
+        ],
+        RowComponent
+      };
+    }
+  };
 </script>
 ```
 
@@ -43,8 +43,8 @@ The component constructor you supply to `<VirtualList>` will be instantiated for
 ```html
 <!-- RowComponent.html -->
 <div>
-	<strong>{{row.value}}</strong>
-	<span>{{row.name}}</span>
+  <strong>{{row.value}}</strong>
+  <span>{{row.name}}</span>
 </div>
 ```
 
