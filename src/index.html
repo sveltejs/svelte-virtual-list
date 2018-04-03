@@ -1,0 +1,110 @@
+<div ref:viewport on:scroll='handleScroll()'>
+	<div ref:container style='padding-top: {{top}}px; padding-bottom: {{bottom}}px;'>
+		{{#each visible as item @index}}
+			<div class='row'>
+				<:Component {component} row={{item.data}} />
+			</div>
+		{{/each}}
+	</div>
+</div>
+
+<style>
+	ref:viewport {
+		height: 100%;
+		overflow-y: auto;
+		-webkit-overflow-scrolling:touch;
+	}
+
+	.row {
+		overflow: hidden;
+	}
+</style>
+
+<script>
+	export default {
+		data() {
+			return { top: 0, bottom: 0, start: 0, end: 0 };
+		},
+
+		computed: {
+			visible: (items, start, end) => {
+				return items.slice(start, end).map((data, i) => {
+					return { index: i + start, data };
+				});
+			}
+		},
+
+		oncreate() {
+			const { items, visible } = this.get();
+			const { viewport, container } = this.refs;
+			const viewportHeight = viewport.offsetHeight;
+
+			this.rows = container.getElementsByClassName('row');
+			this.heightMap = [];
+
+			let height = 0;
+			let i = 0;
+
+			while (height < viewportHeight && i < items.length) {
+				this.set({ end: i + 1 });
+
+				const rowHeight = this.heightMap[i] = this.rows[i].offsetHeight;
+				height += rowHeight;
+
+				i += 1;
+			}
+
+			const end = i;
+			const avg = Math.round(height / i);
+
+			for (; i < items.length; i += 1) this.heightMap[i] = avg;
+
+			this.set({
+				bottom: (items.length - end) * avg
+			});
+		},
+
+		methods: {
+			handleScroll() {
+				const { items, start, end } = this.get();
+				const { offsetHeight, scrollTop } = this.refs.viewport;
+
+				let paddingTop = 0;
+				let offset = 0;
+				let i = 0;
+
+				for (let v = 0; v < this.rows.length; v += 1) {
+					this.heightMap[start + v] = this.rows[v].offsetHeight;
+				}
+
+				for (; i < items.length; i += 1) {
+					offset += this.heightMap[i];
+					if (offset > scrollTop) break;
+
+					paddingTop = offset;
+				}
+
+				const newStart = i++;
+
+				for (; i < items.length; i += 1) {
+					if (offset > scrollTop + offsetHeight) break;
+					offset += this.heightMap[i];
+				}
+
+				const newEnd = i;
+
+				if (newStart === start && newEnd === end) return;
+
+				let paddingBottom = 0;
+				for (; i < items.length; i += 1) paddingBottom += this.heightMap[i];
+
+				this.set({
+					top: paddingTop,
+					bottom: paddingBottom,
+					start: newStart,
+					end: newEnd
+				});
+			}
+		}
+	};
+</script>
