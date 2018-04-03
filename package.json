@@ -16,5 +16,6 @@
   },
   "repository": "https://github.com/sveltejs/svelte-virtual-list",
   "author": "Rich Harris",
-  "license": "LIL"
+  "license": "LIL",
+  "keywords": ["svelte"]
 }
