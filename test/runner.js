@@ -7,7 +7,7 @@ async function go() {
 	const server = serve('test/public', { port });
 	await ports.wait(port);
 
-	const browser = await puppeteer.launch();
+	const browser = await puppeteer.launch({args: ['--no-sandbox']});
 	const page = await browser.newPage();
 
 	page.on('console', msg => {

@@ -20,7 +20,8 @@
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-svelte": "^4.1.0",
     "serve": "^6.5.3",
-    "svelte": "^1.60.1"
+    "svelte": "^1.60.1",
+    "tape-modern": "^1.0.0"
   },
   "repository": "https://github.com/sveltejs/svelte-virtual-list",
   "author": "Rich Harris",
