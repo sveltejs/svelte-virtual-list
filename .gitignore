@@ -4,3 +4,4 @@ yarn.lock
 package-lock.json
 index.mjs
 index.js
+test/public/bundle.js
