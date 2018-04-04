@@ -3,7 +3,8 @@ const serve = require('serve');
 const puppeteer = require('puppeteer');
 
 async function go() {
-	const port = await ports.find(8000);
+	const port = await ports.find(1234);
+	console.log(`found available port: ${port}`);
 	const server = serve('test/public', { port });
 	await ports.wait(port);
 
