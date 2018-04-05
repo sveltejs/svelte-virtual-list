@@ -1,3 +1,4 @@
+import * as svelte from 'svelte';
 import VirtualList from '../..';
 import { assert, test, done } from 'tape-modern';
 
@@ -7,6 +8,7 @@ const target = document.querySelector('main');
 function normalize(html) {
 	const div = document.createElement('div');
 	div.innerHTML = html
+		.replace(/<!--.+?-->/g, '')
 		.replace(/svelte-ref-\w+=""/g, '')
 		.replace(/\s*svelte-\w+\s*/g, '')
 		.replace(/class=""/g, '')
@@ -34,6 +36,51 @@ test('with no data, creates two <div> elements', t => {
 	t.htmlEqual(target.innerHTML, `
 		<div>
 			<div style="padding-top: 0px; padding-bottom: 0px;"></div>
+		</div>
+	`);
+
+	list.destroy();
+});
+
+test('props are passed to child component', t => {
+	const Row = svelte.create(`
+		<span>{{row.foo}}</span>
+		<span>{{baz}}</span>
+		<span>{{items}}</span> <!-- should be undefined -->
+	`);
+
+	const list = new VirtualList({
+		target,
+		data: {
+			items: [{ foo: 'bar'}],
+			component: Row,
+			baz: 'qux'
+		}
+	});
+
+	t.htmlEqual(target.innerHTML, `
+		<div>
+			<div style="padding-top: 0px; padding-bottom: 0px;">
+				<div class="row">
+					<span>bar</span>
+					<span>qux</span>
+					<span>undefined</span>
+				</div>
+			</div>
+		</div>
+	`);
+
+	list.set({ baz: 'changed' });
+
+	t.htmlEqual(target.innerHTML, `
+		<div>
+			<div style="padding-top: 0px; padding-bottom: 0px;">
+				<div class="row">
+					<span>bar</span>
+					<span>changed</span>
+					<span>undefined</span>
+				</div>
+			</div>
 		</div>
 	`);
 

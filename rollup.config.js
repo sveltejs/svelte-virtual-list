@@ -1,5 +1,6 @@
 import svelte from 'rollup-plugin-svelte';
 import resolve from 'rollup-plugin-node-resolve';
+import commonjs from 'rollup-plugin-commonjs';
 import pkg from './package.json';
 
 export default [
@@ -10,6 +11,7 @@ export default [
 			{ file: pkg.main, 'format': 'umd', name: 'VirtualList' }
 		],
 		plugins: [
+			resolve(),
 			svelte({
 				cascade: false,
 				store: true
@@ -25,11 +27,16 @@ export default [
 			format: 'iife'
 		},
 		plugins: [
+			resolve(),
+			commonjs({
+				namedExports: {
+					svelte: ['create', 'compile']
+				}
+			}),
 			svelte({
 				cascade: false,
 				store: true
-			}),
-			resolve()
+			})
 		]
 	}
 ];
