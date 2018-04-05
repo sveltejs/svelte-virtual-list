@@ -43,7 +43,7 @@
 
 			const keys = Object.keys(this.options.data).filter(key => key !== 'items' && key !== 'component');
 			if (keys.length) {
-				this.observeMany(keys, ([values]) => {
+				this.observeMany(keys, values => {
 					const _props = {};
 					keys.forEach((key, i) => {
 						_props[key] = values[i];
