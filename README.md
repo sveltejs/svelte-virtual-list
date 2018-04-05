@@ -49,6 +49,19 @@ The component constructor you supply to `<VirtualList>` will be instantiated for
 ```
 
 
+## `start` and `end`
+
+You can track which rows are visible at any given by binding to the `start` and `end` values:
+
+```html
+<VirtualList items={{things}} component={{RowComponent}} bind:start bind:end />
+
+<p>showing {{start}}-{{end}} of {{things.length}} rows</p>
+```
+
+You can rename them with e.g. `bind:start=a bind:end=b`.
+
+
 ## Configuring webpack
 
 If you're using webpack with [svelte-loader](https://github.com/sveltejs/svelte-loader), make sure that you add `"svelte"` to [`resolve.mainFields`](https://webpack.js.org/configuration/resolve/#resolve-mainfields) in your webpack config. This ensures that webpack imports the uncompiled component (`src/index.html`) rather than the compiled version (`index.mjs`) — this is more efficient.
