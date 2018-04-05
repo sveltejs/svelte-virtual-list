@@ -7,17 +7,28 @@
   "main": "index.js",
   "scripts": {
     "build": "rollup -c",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm test",
+    "test": "node test/runner.js | faucet",
+    "test:browser": "npm run build && serve test/public",
+    "pretest": "npm run build"
   },
   "devDependencies": {
+    "faucet": "^0.0.1",
+    "port-authority": "^1.0.3",
+    "puppeteer": "^1.2.0",
     "rollup": "^0.57.1",
+    "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-svelte": "^4.1.0",
-    "svelte": "^1.60.0"
+    "serve": "^6.5.3",
+    "svelte": "^1.60.1",
+    "tape-modern": "^1.0.0"
   },
   "repository": "https://github.com/sveltejs/svelte-virtual-list",
   "author": "Rich Harris",
   "license": "LIL",
-  "keywords": ["svelte"],
+  "keywords": [
+    "svelte"
+  ],
   "files": [
     "src",
     "index.mjs",
