@@ -34,10 +34,30 @@ test('with no data, creates two <div> elements', t => {
 	});
 
 	t.htmlEqual(target.innerHTML, `
-		<div>
+		<div style='height: 100%;'>
 			<div style="padding-top: 0px; padding-bottom: 0px;"></div>
 		</div>
 	`);
+
+	list.destroy();
+});
+
+test('allows height to be specified', t => {
+	const list = new VirtualList({
+		target,
+		data: {
+			items: [],
+			component: null,
+			height: '150px'
+		}
+	});
+
+	const div = target.firstElementChild;
+
+	t.equal(getComputedStyle(div).height, '150px');
+
+	list.set({ height: '50%' });
+	t.equal(getComputedStyle(div).height, '250px');
 
 	list.destroy();
 });
@@ -59,7 +79,7 @@ test('props are passed to child component', t => {
 	});
 
 	t.htmlEqual(target.innerHTML, `
-		<div>
+		<div style='height: 100%;'>
 			<div style="padding-top: 0px; padding-bottom: 0px;">
 				<div class="row">
 					<span>bar</span>
@@ -73,7 +93,7 @@ test('props are passed to child component', t => {
 	list.set({ baz: 'changed' });
 
 	t.htmlEqual(target.innerHTML, `
-		<div>
+		<div style='height: 100%;'>
 			<div style="padding-top: 0px; padding-bottom: 0px;">
 				<div class="row">
 					<span>bar</span>
