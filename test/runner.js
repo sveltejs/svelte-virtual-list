@@ -6,7 +6,7 @@ async function go() {
 	const port = await ports.find(1234);
 	console.log(`found available port: ${port}`);
 	const server = serve('test/public', { port });
-	await ports.wait(port);
+	await ports.wait(port).catch(() => {}); // workaround windows gremlins
 
 	const browser = await puppeteer.launch({args: ['--no-sandbox']});
 	const page = await browser.newPage();
