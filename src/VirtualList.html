@@ -1,4 +1,4 @@
-<div ref:viewport on:scroll='handleScroll()'>
+<div ref:viewport on:scroll='handleScroll()' style='height: {{height}};'>
 	<div ref:container style='padding-top: {{top}}px; padding-bottom: {{bottom}}px;'>
 		{{#each visible as item @index}}
 			<div class='row'>
@@ -10,7 +10,6 @@
 
 <style>
 	ref:viewport {
-		height: 100%;
 		overflow-y: auto;
 		-webkit-overflow-scrolling:touch;
 	}
@@ -25,7 +24,7 @@
 
 	export default {
 		data() {
-			return { top: 0, bottom: 0, start: 0, end: 0, _props: {} };
+			return { top: 0, bottom: 0, start: 0, end: 0, height: '100%', _props: {} };
 		},
 
 		computed: {
