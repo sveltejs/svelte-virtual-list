@@ -1,5 +1,9 @@
 # svelte-virtual-list changelog
 
+## 2.0.0
+
+* Update to latest (2.0.0) Svelte syntax
+
 ## 1.1.0
 
 * `height` option ([#1](https://github.com/sveltejs/svelte-virtual-list/issues/1))

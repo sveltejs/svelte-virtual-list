@@ -12,7 +12,7 @@ yarn add @sveltejs/svelte-virtual-list
 ## Usage
 
 ```html
-<VirtualList items={{things}} component={{RowComponent}} />
+<VirtualList items={things} component={RowComponent} />
 
 <script>
   import VirtualList from '@sveltejs/svelte-virtual-list';
@@ -43,8 +43,8 @@ The component constructor you supply to `<VirtualList>` will be instantiated for
 ```html
 <!-- RowComponent.html -->
 <div>
-  <strong>{{row.value}}</strong>
-  <span>{{row.name}}</span>
+  <strong>{row.value}</strong>
+  <span>{row.name}</span>
 </div>
 ```
 
@@ -54,9 +54,9 @@ The component constructor you supply to `<VirtualList>` will be instantiated for
 You can track which rows are visible at any given by binding to the `start` and `end` values:
 
 ```html
-<VirtualList items={{things}} component={{RowComponent}} bind:start bind:end />
+<VirtualList items={things} component={RowComponent} bind:start bind:end />
 
-<p>showing {{start}}-{{end}} of {{things.length}} rows</p>
+<p>showing {start}-{end} of {things.length} rows</p>
 ```
 
 You can rename them with e.g. `bind:start=a bind:end=b`.
