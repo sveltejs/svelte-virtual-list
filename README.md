@@ -12,7 +12,7 @@ yarn add @sveltejs/svelte-virtual-list
 ## Usage
 
 ```html
-<VirtualList items={{things}} component={{RowComponent}} />
+<VirtualList items={things} component={RowComponent} />
 
 <script>
   import VirtualList from '@sveltejs/svelte-virtual-list';
@@ -25,11 +25,11 @@ yarn add @sveltejs/svelte-virtual-list
       return {
         things: [
           // these can be any values you like
-          { name: 'one', value: 1 },
-          { name: 'two', value: 2 },
-          { name: 'three', value: 3 },
+          { name: 'one', number: 1 },
+          { name: 'two', number: 2 },
+          { name: 'three', number: 3 },
           // ...
-          { name: 'six thousand and ninety-two', value: 6092 }
+          { name: 'six thousand and ninety-two', number: 6092 }
         ],
         RowComponent
       };
@@ -38,13 +38,13 @@ yarn add @sveltejs/svelte-virtual-list
 </script>
 ```
 
-The component constructor you supply to `<VirtualList>` will be instantiated for each visible member of `items`, with the data exposed as `row`:
+The component constructor you supply to `<VirtualList>` will be instantiated for each visible member of `items`:
 
 ```html
 <!-- RowComponent.html -->
 <div>
-  <strong>{{row.value}}</strong>
-  <span>{{row.name}}</span>
+  <strong>{number}</strong>
+  <span>{name}</span>
 </div>
 ```
 
@@ -54,12 +54,29 @@ The component constructor you supply to `<VirtualList>` will be instantiated for
 You can track which rows are visible at any given by binding to the `start` and `end` values:
 
 ```html
-<VirtualList items={{things}} component={{RowComponent}} bind:start bind:end />
+<VirtualList items={things} component={RowComponent} bind:start bind:end />
 
-<p>showing {{start}}-{{end}} of {{things.length}} rows</p>
+<p>showing {start}-{end} of {things.length} rows</p>
 ```
 
 You can rename them with e.g. `bind:start=a bind:end=b`.
+
+
+## Additional properties
+
+You can add arbitrary properties to `<VirtualList>` and they will be forwarded to the rows:
+
+```html
+<VirtualList class="funky" answer={42} items={things} component={RowComponent} />
+```
+
+```html
+<!-- RowComponent.html -->
+<div class="{number === answer ? 'the-answer' : ''}">
+  <strong>{number}</strong>
+  <span>{name}</span>
+</div>
+```
 
 
 ## Configuring webpack

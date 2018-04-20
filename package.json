@@ -21,7 +21,7 @@
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-svelte": "^4.1.0",
     "serve": "^6.5.3",
-    "svelte": "^2.0.0",
+    "svelte": "^2.1.0",
     "tap-dot": "^1.0.5",
     "tape-modern": "^1.0.0"
   },
