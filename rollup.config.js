@@ -12,10 +12,7 @@ export default [
 		],
 		plugins: [
 			resolve(),
-			svelte({
-				cascade: false,
-				store: true
-			})
+			svelte()
 		]
 	},
 
@@ -28,15 +25,8 @@ export default [
 		},
 		plugins: [
 			resolve(),
-			commonjs({
-				namedExports: {
-					svelte: ['create', 'compile']
-				}
-			}),
-			svelte({
-				cascade: false,
-				store: true
-			})
+			commonjs(),
+			svelte()
 		]
 	}
 ];

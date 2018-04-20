@@ -1,10 +1,10 @@
-<div ref:viewport on:scroll='handleScroll()' style='height: {{height}};'>
-	<div ref:container style='padding-top: {{top}}px; padding-bottom: {{bottom}}px;'>
-		{{#each visible as item @index}}
+<div ref:viewport on:scroll='handleScroll()' style='height: {height};'>
+	<div ref:container style='padding-top: {top}px; padding-bottom: {bottom}px;'>
+		{#each visible as item (item.index)}
 			<div class='row'>
-				<:Component {component} {{..._props}} row={{item.data}} />
+				<svelte:component this={component} {..._props} row={item.data} />
 			</div>
-		{{/each}}
+		{/each}
 	</div>
 </div>
 
@@ -20,15 +20,13 @@
 </style>
 
 <script>
-	import { observeMany } from 'svelte-extras';
-
 	export default {
 		data() {
 			return { top: 0, bottom: 0, start: 0, end: 0, height: '100%', _props: {} };
 		},
 
 		computed: {
-			visible: (items, start, end) => {
+			visible: ({ items, start, end }) => {
 				return items.slice(start, end).map((data, i) => {
 					return { index: i + start, data };
 				});
@@ -36,16 +34,24 @@
 		},
 
 		oncreate() {
-			const { items, visible } = this.get();
+			const { items, _props } = this.get();
 			const { viewport, container } = this.refs;
 			const viewportHeight = viewport.offsetHeight;
 
 			const keys = Object.keys(this.options.data).filter(key => key !== 'items' && key !== 'component');
 			if (keys.length) {
-				this.observeMany(keys, values => {
+				const state = this.get();
+				keys.forEach(key => {
+					_props[key] = state[key];
+				});
+				this.set({ _props });
+
+				this.on('state', ({ changed, current }) => {
+					if (!keys.some(key => changed[key])) return;
+
 					const _props = {};
-					keys.forEach((key, i) => {
-						_props[key] = values[i];
+					keys.forEach(key => {
+						_props[key] = current[key];
 					});
 					this.set({ _props });
 				});
@@ -77,8 +83,6 @@
 		},
 
 		methods: {
-			observeMany,
-
 			handleScroll() {
 				const { items, start, end } = this.get();
 				const { offsetHeight, scrollTop } = this.refs.viewport;

@@ -1,4 +1,4 @@
-import * as svelte from 'svelte';
+import svelte from 'svelte';
 import VirtualList from '../..';
 import { assert, test, done } from 'tape-modern';
 
@@ -64,9 +64,9 @@ test('allows height to be specified', t => {
 
 test('props are passed to child component', t => {
 	const Row = svelte.create(`
-		<span>{{row.foo}}</span>
-		<span>{{baz}}</span>
-		<span>{{items}}</span> <!-- should be undefined -->
+		<span>{row.foo}</span>
+		<span>{baz}</span>
+		<span>{items}</span> <!-- should be undefined -->
 	`);
 
 	const list = new VirtualList({
