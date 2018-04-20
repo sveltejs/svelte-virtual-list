@@ -1,6 +1,6 @@
 {
   "name": "@sveltejs/svelte-virtual-list",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A <VirtualList> component for Svelte apps",
   "svelte": "src/index.html",
   "module": "index.mjs",
@@ -16,12 +16,12 @@
     "faucet": "^0.0.1",
     "port-authority": "^1.0.3",
     "puppeteer": "^1.2.0",
-    "rollup": "^0.57.1",
+    "rollup": "^0.58.1",
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-svelte": "^4.1.0",
     "serve": "^6.5.3",
-    "svelte": "^1.60.1",
+    "svelte": "^2.0.0",
     "tap-dot": "^1.0.5",
     "tape-modern": "^1.0.0"
   },
@@ -37,6 +37,6 @@
     "index.js"
   ],
   "dependencies": {
-    "svelte-extras": "^1.6.0"
+    "svelte-extras": "^2.0.2"
   }
 }

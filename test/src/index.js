@@ -64,9 +64,9 @@ test('allows height to be specified', t => {
 
 test('props are passed to child component', t => {
 	const Row = svelte.create(`
-		<span>{{row.foo}}</span>
-		<span>{{baz}}</span>
-		<span>{{items}}</span> <!-- should be undefined -->
+		<span>{row.foo}</span>
+		<span>{baz}</span>
+		<span>{items}</span> <!-- should be undefined -->
 	`);
 
 	const list = new VirtualList({

@@ -1,10 +1,10 @@
-<div ref:viewport on:scroll='handleScroll()' style='height: {{height}};'>
-	<div ref:container style='padding-top: {{top}}px; padding-bottom: {{bottom}}px;'>
-		{{#each visible as item @index}}
+<div ref:viewport on:scroll='handleScroll()' style='height: {height};'>
+	<div ref:container style='padding-top: {top}px; padding-bottom: {bottom}px;'>
+		{#each visible as item @index}
 			<div class='row'>
-				<:Component {component} {{..._props}} row={{item.data}} />
+				<svelte:component this={component} {..._props} row={item.data} />
 			</div>
-		{{/each}}
+		{/each}
 	</div>
 </div>
 
@@ -28,7 +28,7 @@
 		},
 
 		computed: {
-			visible: (items, start, end) => {
+			visible: ({items, start, end}) => {
 				return items.slice(start, end).map((data, i) => {
 					return { index: i + start, data };
 				});
