@@ -62,6 +62,15 @@ You can track which rows are visible at any given by binding to the `start` and 
 You can rename them with e.g. `bind:start=a bind:end=b`.
 
 
+## `itemHeight`
+
+You can optimize initial display and scrolling when the height of items is known in advance.
+
+```html
+<VirtualList items={things} component={RowComponent} itemHeight={48} />
+```
+
+
 ## Additional properties
 
 You can add arbitrary properties to `<VirtualList>` and they will be forwarded to the rows:

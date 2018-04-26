@@ -62,6 +62,40 @@ test('allows height to be specified', t => {
 	list.destroy();
 });
 
+test('allows item height to be specified', t => {
+	const Row = svelte.create(`
+		<span>{foo}</span>
+	`);
+
+	const list = new VirtualList({
+		target,
+		data: {
+			items: [{ foo: 'bar' }, { foo: 'bar' }, { foo: 'bar' }, { foo: 'bar' }],
+			component: null,
+			height: '150px',
+			itemHeight: 100
+		}
+	});
+
+	const div = target.firstElementChild;
+
+	t.equal(div.getElementsByClassName('row').length, 2);
+
+	// list.set({ itemHeight: 50 }); // This line throws an error which I believe is in the Svelte framework code:
+	// TypeError: Cannot read property 'length' of undefined
+  //   at getSpreadUpdate (http://localhost:1234/bundle.js:24696:18)
+  //   at Object.update [as p] (http://localhost:1234/bundle.js:25118:36)
+  //   at updateKeyedEach (http://localhost:1234/bundle.js:24624:11)
+  //   at Object.update [as p] (http://localhost:1234/bundle.js:25017:21)
+  //   at VirtualList._set (http://localhost:1234/bundle.js:24814:19)
+	//   at VirtualList.set (http://localhost:1234/bundle.js:24789:8)
+
+	// TODO, run handleScroll when items or itemHeight is updated? Probably not needed.
+	// t.equal(div.getElementsByClassName('row').length, 3);
+
+	list.destroy();
+});
+
 test('props are passed to child component', t => {
 	const Row = svelte.create(`
 		<span>{foo}</span>
