@@ -1,4 +1,4 @@
-<div ref:viewport on:scroll='handleScroll()' style='height: {height};'>
+<div ref:viewport on:scroll='refresh()' style='height: {height};'>
 	<div ref:container style='padding-top: {top}px; padding-bottom: {bottom}px;'>
 		{#each visible as item (item.index)}
 			<div class='row'>
@@ -38,23 +38,13 @@
 			const { viewport, container } = this.refs;
 			const viewportHeight = viewport.offsetHeight;
 
-			const keys = Object.keys(this.options.data).filter(key => key !== 'items' && key !== 'component' && key !== 'itemHeight');
+			const keys = Object.keys(this.options.data).filter(key => key !== 'items' && key !== 'component' && key !== 'height' && key !== 'itemHeight');
 			if (keys.length) {
 				const state = this.get();
 				keys.forEach(key => {
 					_props[key] = state[key];
 				});
 				this.set({ _props });
-
-				this.on('state', ({ changed, current }) => {
-					if (!keys.some(key => changed[key])) return;
-
-					const _props = {};
-					keys.forEach(key => {
-						_props[key] = current[key];
-					});
-					this.set({ _props });
-				});
 			}
 
 			this.rows = container.getElementsByClassName('row');
@@ -89,10 +79,28 @@
 					bottom: (items.length - end) * avg
 				});
 			}
+
+			this.on('state', ({ changed, previous, current }) => {
+				if (changed.items || changed.height || changed.itemHeight) {
+					if (current.itemHeight && (changed.itemHeight || current.items.length !== this.heightMap.length)) {
+						this.heightMap = current.items.map(() => current.itemHeight);
+					}
+
+					this.refresh();
+				}
+
+				if (keys.some(key => changed[key])) {
+					const _props = {};
+					keys.forEach(key => {
+						_props[key] = current[key];
+					});
+					this.set({ _props });
+				}
+			});
 		},
 
 		methods: {
-			handleScroll() {
+			refresh() {
 				const { items, start, end, itemHeight } = this.get();
 				const { offsetHeight, scrollTop } = this.refs.viewport;
 
@@ -100,17 +108,15 @@
 				let offset = 0;
 				let i = 0;
 
-				if (itemHeight) {
-					if (this.heightMap.length !== items.length) {
-						this.heightMap = items.map(item => itemHeight);
-					}
-				} else {
+				if (!itemHeight) {
 					for (let v = 0; v < this.rows.length; v += 1) {
 						this.heightMap[start + v] = this.rows[v].offsetHeight;
 					}
 				}
 
 				for (; i < items.length; i += 1) {
+					if (!(i in this.heightMap)) break;
+
 					offset += this.heightMap[i];
 					if (offset > scrollTop) break;
 
@@ -120,7 +126,7 @@
 				const newStart = i++;
 
 				for (; i < items.length; i += 1) {
-					if (offset > scrollTop + offsetHeight) break;
+					if (offset >= scrollTop + offsetHeight) break;
 					offset += this.heightMap[i];
 				}
 
