@@ -16,7 +16,7 @@
     "faucet": "^0.0.1",
     "port-authority": "^1.0.3",
     "puppeteer": "^1.2.0",
-    "rollup": "^0.57.1",
+    "rollup": "^0.58.2",
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-svelte": "^4.1.0",
@@ -35,8 +35,5 @@
     "src",
     "index.mjs",
     "index.js"
-  ],
-  "dependencies": {
-    "svelte-extras": "^1.6.0"
-  }
+  ]
 }
