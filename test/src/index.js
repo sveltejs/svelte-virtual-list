@@ -83,8 +83,7 @@ test('allows item height to be specified', t => {
 
 	list.set({ itemHeight: 50 });
 
-	// TODO, run handleScroll when items or itemHeight is updated? Probably not needed.
-	// t.equal(div.getElementsByClassName('row').length, 3);
+	t.equal(div.getElementsByClassName('row').length, 3);
 
 	list.destroy();
 });
@@ -126,6 +125,54 @@ test('props are passed to child component', t => {
 					<span>bar</span>
 					<span>changed</span>
 					<span>undefined</span>
+				</div>
+			</div>
+		</div>
+	`);
+
+	list.destroy();
+});
+
+test('updates when items change', t => {
+	const Row = svelte.create(`
+		<span>{foo}</span>
+	`);
+
+	const list = new VirtualList({
+		target,
+		data: {
+			items: [{ foo: 'bar'}],
+			component: Row
+		}
+	});
+
+	t.htmlEqual(target.innerHTML, `
+		<div style='height: 100%;'>
+			<div style="padding-top: 0px; padding-bottom: 0px;">
+				<div class="row">
+					<span>bar</span>
+				</div>
+			</div>
+		</div>
+	`);
+
+	list.set({
+		items: [{ foo: 'bar'}, { foo: 'baz'}, { foo: 'qux'}]
+	});
+
+	t.htmlEqual(target.innerHTML, `
+		<div style='height: 100%;'>
+			<div style="padding-top: 0px; padding-bottom: 0px;">
+				<div class="row">
+					<span>bar</span>
+				</div>
+
+				<div class="row">
+					<span>baz</span>
+				</div>
+
+				<div class="row">
+					<span>qux</span>
 				</div>
 			</div>
 		</div>
