@@ -1,5 +1,9 @@
 # svelte-virtual-list changelog
 
+## 2.1.0
+
+* Add `itemHeight` property for optimized rendering where possible ([#11](https://github.com/sveltejs/svelte-virtual-list/pull/11))
+
 ## 2.0.1
 
 * Fix `pkg.svelte`
