@@ -1,5 +1,9 @@
 # svelte-virtual-list changelog
 
+## 2.0.1
+
+* Fix `pkg.svelte`
+
 ## 2.0.0
 
 * Update for Svelte v2
