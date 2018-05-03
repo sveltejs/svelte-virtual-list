@@ -82,7 +82,7 @@
 
 			this.on('state', ({ changed, previous, current }) => {
 				if (changed.items || changed.height || changed.itemHeight) {
-					if (changed.itemHeight || current.items.length !== this.heightMap.length) {
+					if (current.itemHeight && (changed.itemHeight || current.items.length !== this.heightMap.length)) {
 						this.heightMap = current.items.map(() => current.itemHeight);
 					}
 
@@ -115,6 +115,8 @@
 				}
 
 				for (; i < items.length; i += 1) {
+					if (!(i in this.heightMap)) break;
+
 					offset += this.heightMap[i];
 					if (offset > scrollTop) break;
 
