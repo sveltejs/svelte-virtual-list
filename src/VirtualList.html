@@ -22,7 +22,7 @@
 <script>
 	export default {
 		data() {
-			return { top: 0, bottom: 0, start: 0, end: 0, height: '100%', _props: {} };
+			return { top: 0, bottom: 0, start: 0, end: 0, height: '100%', itemHeight: 0, _props: {} };
 		},
 
 		computed: {
@@ -34,11 +34,11 @@
 		},
 
 		oncreate() {
-			const { items, _props } = this.get();
+			const { items, _props, itemHeight } = this.get();
 			const { viewport, container } = this.refs;
 			const viewportHeight = viewport.offsetHeight;
 
-			const keys = Object.keys(this.options.data).filter(key => key !== 'items' && key !== 'component');
+			const keys = Object.keys(this.options.data).filter(key => key !== 'items' && key !== 'component' && key !== 'itemHeight');
 			if (keys.length) {
 				const state = this.get();
 				keys.forEach(key => {
@@ -58,41 +58,56 @@
 			}
 
 			this.rows = container.getElementsByClassName('row');
-			this.heightMap = [];
 
-			let height = 0;
-			let i = 0;
+			if (itemHeight) {
+				this.heightMap = items.map(item => itemHeight);
+				this.set({
+					end: Math.min(items.length, Math.ceil(viewportHeight / itemHeight)),
+					bottom: items.length * itemHeight
+				});
+			} else {
+				this.heightMap = [];
 
-			while (height < viewportHeight && i < items.length) {
-				this.set({ end: i + 1 });
+				let height = 0;
+				let i = 0;
 
-				const rowHeight = this.heightMap[i] = this.rows[i].offsetHeight;
-				height += rowHeight;
+				while (height < viewportHeight && i < items.length) {
+					this.set({ end: i + 1 });
 
-				i += 1;
+					const rowHeight = this.heightMap[i] = this.rows[i].offsetHeight;
+					height += rowHeight;
+
+					i += 1;
+				}
+
+				const end = i;
+				const avg = Math.round(height / i);
+
+				for (; i < items.length; i += 1) this.heightMap[i] = avg;
+
+				this.set({
+					bottom: (items.length - end) * avg
+				});
 			}
-
-			const end = i;
-			const avg = Math.round(height / i);
-
-			for (; i < items.length; i += 1) this.heightMap[i] = avg;
-
-			this.set({
-				bottom: (items.length - end) * avg
-			});
 		},
 
 		methods: {
 			handleScroll() {
-				const { items, start, end } = this.get();
+				const { items, start, end, itemHeight } = this.get();
 				const { offsetHeight, scrollTop } = this.refs.viewport;
 
 				let paddingTop = 0;
 				let offset = 0;
 				let i = 0;
 
-				for (let v = 0; v < this.rows.length; v += 1) {
-					this.heightMap[start + v] = this.rows[v].offsetHeight;
+				if (itemHeight) {
+					if (this.heightMap.length !== items.length) {
+						this.heightMap = items.map(item => itemHeight);
+					}
+				} else {
+					for (let v = 0; v < this.rows.length; v += 1) {
+						this.heightMap[start + v] = this.rows[v].offsetHeight;
+					}
 				}
 
 				for (; i < items.length; i += 1) {
