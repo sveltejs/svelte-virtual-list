@@ -34,9 +34,8 @@
 		},
 
 		oncreate() {
-			const { items, _props, itemHeight } = this.get();
-			const { viewport, container } = this.refs;
-			const viewportHeight = viewport.offsetHeight;
+			const { items, _props } = this.get();
+			const { container } = this.refs;
 
 			const keys = Object.keys(this.options.data).filter(key => key !== 'items' && key !== 'component' && key !== 'height' && key !== 'itemHeight');
 			if (keys.length) {
@@ -47,43 +46,29 @@
 				this.set({ _props });
 			}
 
+			this.heightMap = [];
 			this.rows = container.getElementsByClassName('row');
 
-			if (itemHeight) {
-				this.heightMap = items.map(item => itemHeight);
-				this.set({
-					end: Math.min(items.length, Math.ceil(viewportHeight / itemHeight)),
-					bottom: items.length * itemHeight
-				});
-			} else {
-				this.heightMap = [];
-
-				let height = 0;
-				let i = 0;
-
-				while (height < viewportHeight && i < items.length) {
-					this.set({ end: i + 1 });
-
-					const rowHeight = this.heightMap[i] = this.rows[i].offsetHeight;
-					height += rowHeight;
-
-					i += 1;
-				}
-
-				const end = i;
-				const avg = Math.round(height / i);
-
-				for (; i < items.length; i += 1) this.heightMap[i] = avg;
-
-				this.set({
-					bottom: (items.length - end) * avg
-				});
+			if (items.length > 0) {
+				this.initialise();
 			}
 
 			this.on('state', ({ changed, previous, current }) => {
 				if (changed.items || changed.height || changed.itemHeight) {
-					if (current.itemHeight && (changed.itemHeight || current.items.length !== this.heightMap.length)) {
+					if (current.itemHeight && (changed.itemHeight || current.items.length > this.heightMap.length)) {
 						this.heightMap = current.items.map(() => current.itemHeight);
+					}
+
+					else if (current.items.length > this.heightMap.length) {
+						if (this.heightMap.length === 0) {
+							this.initialise();
+						} else {
+							let height = 0;
+							let i = 0;
+							for (; i < this.heightMap.length; i += 1) height += this.heightMap[i];
+							const avg = height / this.heightMap.length;
+							for (; i < current.items.length; i += 1) this.heightMap[i] = avg;
+						}
 					}
 
 					this.refresh();
@@ -100,6 +85,41 @@
 		},
 
 		methods: {
+			initialise() {
+				const { items, itemHeight } = this.get();
+				const { viewport } = this.refs;
+				const viewportHeight = viewport.offsetHeight;
+
+				if (itemHeight) {
+					this.heightMap = items.map(item => itemHeight);
+					this.set({
+						end: Math.min(items.length, Math.ceil(viewportHeight / itemHeight)),
+						bottom: items.length * itemHeight
+					});
+				} else {
+					let height = 0;
+					let i = 0;
+
+					while (height < viewportHeight && i < items.length) {
+						this.set({ end: i + 1 });
+
+						const rowHeight = this.heightMap[i] = this.rows[i].offsetHeight;
+						height += rowHeight;
+
+						i += 1;
+					}
+
+					const end = i;
+					const avg = Math.round(height / i);
+
+					for (; i < items.length; i += 1) this.heightMap[i] = avg;
+
+					this.set({
+						bottom: (items.length - end) * avg
+					});
+				}
+			},
+
 			refresh() {
 				const { items, start, end, itemHeight } = this.get();
 				const { offsetHeight, scrollTop } = this.refs.viewport;
