@@ -5,6 +5,45 @@ import { assert, test, done } from 'tape-modern';
 // setup
 const target = document.querySelector('main');
 
+function indent(node, spaces) {
+	if (node.childNodes.length === 0) return;
+
+	if (node.childNodes.length > 1 || node.childNodes[0].nodeType !== 3) {
+		const first = node.childNodes[0];
+		const last = node.childNodes[node.childNodes.length - 1];
+
+		const head = `\n${spaces}  `;
+		const tail = `\n${spaces}`;
+
+		if (first.nodeType === 3) {
+			first.data = `${head}${first.data}`;
+		} else {
+			node.insertBefore(document.createTextNode(head), first);
+		}
+
+		if (last.nodeType === 3) {
+			last.data = `${last.data}${tail}`;
+		} else {
+			node.appendChild(document.createTextNode(tail));
+		}
+
+		let lastType = null;
+		for (let i = 0; i < node.childNodes.length; i += 1) {
+			const child = node.childNodes[i];
+			if (child.nodeType === 1) {
+				indent(node.childNodes[i], `${spaces}  `);
+
+				if (lastType === 1) {
+					node.insertBefore(document.createTextNode(head), child);
+					i += 1;
+				}
+			}
+
+			lastType = child.nodeType;
+		}
+	}
+}
+
 function normalize(html) {
 	const div = document.createElement('div');
 	div.innerHTML = html
@@ -14,6 +53,8 @@ function normalize(html) {
 		.replace(/class=""/g, '')
 		.replace(/>\s+/g, '>')
 		.replace(/\s+</g, '<');
+
+	indent(div, '');
 
 	div.normalize();
 	return div.innerHTML;
@@ -135,22 +176,23 @@ test('props are passed to child component', t => {
 
 test('updates when items change', t => {
 	const Row = svelte.create(`
-		<span>{foo}</span>
+		<div style="height: 80px;">{foo}</div>
 	`);
 
 	const list = new VirtualList({
 		target,
 		data: {
 			items: [{ foo: 'bar'}],
-			component: Row
+			component: Row,
+			height: '100px'
 		}
 	});
 
 	t.htmlEqual(target.innerHTML, `
-		<div style='height: 100%;'>
+		<div style='height: 100px;'>
 			<div style="padding-top: 0px; padding-bottom: 0px;">
 				<div class="row">
-					<span>bar</span>
+					<div style="height: 80px;">bar</div>
 				</div>
 			</div>
 		</div>
@@ -161,18 +203,55 @@ test('updates when items change', t => {
 	});
 
 	t.htmlEqual(target.innerHTML, `
-		<div style='height: 100%;'>
-			<div style="padding-top: 0px; padding-bottom: 0px;">
+		<div style='height: 100px;'>
+			<div style="padding-top: 0px; padding-bottom: 80px;">
 				<div class="row">
-					<span>bar</span>
+					<div style="height: 80px;">bar</div>
 				</div>
 
 				<div class="row">
-					<span>baz</span>
+					<div style="height: 80px;">baz</div>
+				</div>
+			</div>
+		</div>
+	`);
+
+	list.destroy();
+});
+
+test('updates when items change from an empty list', t => {
+	const Row = svelte.create(`
+		<div style="height: 80px;">{foo}</div>
+	`);
+
+	const list = new VirtualList({
+		target,
+		data: {
+			items: [],
+			component: Row,
+			height: '100px'
+		}
+	});
+
+	t.htmlEqual(target.innerHTML, `
+		<div style='height: 100px;'>
+			<div style="padding-top: 0px; padding-bottom: 0px;"></div>
+		</div>
+	`);
+
+	list.set({
+		items: [{ foo: 'bar'}, { foo: 'baz'}, { foo: 'qux'}]
+	});
+
+	t.htmlEqual(target.innerHTML, `
+		<div style='height: 100px;'>
+			<div style="padding-top: 0px; padding-bottom: 80px;">
+				<div class="row">
+					<div style="height: 80px;">bar</div>
 				</div>
 
 				<div class="row">
-					<span>qux</span>
+					<div style="height: 80px;">baz</div>
 				</div>
 			</div>
 		</div>
