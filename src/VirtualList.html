@@ -1,5 +1,5 @@
 <div ref:viewport on:scroll='refresh()' style='height: {height};'>
-	<div ref:container style='padding-top: {top}px; padding-bottom: {bottom}px;'>
+	<div ref:container style='padding-top: {_top}px; padding-bottom: {_bottom}px;'>
 		{#each visible as item (item.index)}
 			<div class='row'>
 				<svelte:component this={component} {..._props} {...item.data} />
@@ -22,7 +22,7 @@
 <script>
 	export default {
 		data() {
-			return { top: 0, bottom: 0, start: 0, end: 0, height: '100%', itemHeight: 0, _props: {} };
+			return { start: 0, end: 0, height: '100%', itemHeight: 0, _top: 0, _bottom: 0, _props: {} };
 		},
 
 		computed: {
@@ -94,7 +94,7 @@
 					this.heightMap = items.map(item => itemHeight);
 					this.set({
 						end: Math.min(items.length, Math.ceil(viewportHeight / itemHeight)),
-						bottom: items.length * itemHeight
+						_bottom: items.length * itemHeight
 					});
 				} else {
 					let height = 0;
@@ -115,7 +115,7 @@
 					for (; i < items.length; i += 1) this.heightMap[i] = avg;
 
 					this.set({
-						bottom: (items.length - end) * avg
+						_bottom: (items.length - end) * avg
 					});
 				}
 			},
@@ -158,8 +158,8 @@
 				for (; i < items.length; i += 1) paddingBottom += this.heightMap[i];
 
 				this.set({
-					top: paddingTop,
-					bottom: paddingBottom,
+					_top: paddingTop,
+					_bottom: paddingBottom,
 					start: newStart,
 					end: newEnd
 				});
