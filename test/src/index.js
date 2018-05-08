@@ -260,5 +260,43 @@ test('updates when items change from an empty list', t => {
 	list.destroy();
 });
 
+test('handles unexpected height changes when scrolling up', async t => {
+	const Row = svelte.create(`
+		<div style="height: {rowHeight}px;">test</div>
+	`);
+
+	const list = new VirtualList({
+		target,
+		data: {
+			items: Array(20).fill().map(() => ({})),
+			component: Row,
+			height: '500px',
+			rowHeight: 50
+		}
+	});
+
+	const { viewport } = list.refs;
+
+	await scroll(viewport, 500);
+	assert.equal(viewport.scrollTop, 500);
+
+	list.set({ rowHeight: 100 });
+	await scroll(viewport, 475);
+	assert.equal(viewport.scrollTop, 525);
+
+	list.destroy();
+});
+
+function scroll(element, y) {
+	return new Promise(fulfil => {
+		element.addEventListener('scroll', function handler() {
+			element.removeEventListener('scroll', handler);
+			fulfil();
+		});
+
+		element.scrollTo(0, y);
+	});
+}
+
 // this allows us to close puppeteer once tests have completed
 window.done = done;
