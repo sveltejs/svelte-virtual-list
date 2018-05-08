@@ -1,6 +1,6 @@
 {
   "name": "@sveltejs/svelte-virtual-list",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A <VirtualList> component for Svelte apps",
   "svelte": "src/VirtualList.html",
   "module": "index.mjs",

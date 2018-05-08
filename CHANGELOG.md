@@ -1,5 +1,10 @@
 # svelte-virtual-list changelog
 
+## 2.1.2
+
+* Compensate for unexpected heights when scrolling up
+* Use leading underscores for internal properties
+
 ## 2.1.1
 
 * Handle changes to `items` ([#5](https://github.com/sveltejs/svelte-virtual-list/issues/5))
