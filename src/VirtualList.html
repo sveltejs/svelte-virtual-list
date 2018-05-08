@@ -163,6 +163,19 @@
 					start: newStart,
 					end: newEnd
 				});
+
+				if (newStart < start) {
+					let d = 0;
+
+					for (let i = newStart; i < start; i += 1) {
+						const expectedHeight = this.heightMap[i];
+						const actualHeight = this.rows[i - newStart].offsetHeight;
+
+						d += actualHeight - expectedHeight;
+					}
+
+					this.refs.viewport.scrollTo(0, this.refs.viewport.scrollTop + d);
+				}
 			}
 		}
 	};
