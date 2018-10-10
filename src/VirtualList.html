@@ -1,4 +1,4 @@
-<div ref:viewport on:scroll='refresh()' style='height: {height};'>
+<div ref:viewport on:scroll='refresh()' style='height: {height};' bind:offsetHeight="viewportHeight">
 	<div ref:container style='padding-top: {_top}px; padding-bottom: {_bottom}px;'>
 		{#each visible as item (item.index)}
 			<div class='row'>
@@ -54,7 +54,7 @@
 			}
 
 			this.on('state', ({ changed, previous, current }) => {
-				if (changed.items || changed.height || changed.itemHeight) {
+				if (changed.items || changed.height || changed.itemHeight || changed.viewportHeight) {
 					if (current.itemHeight && (changed.itemHeight || current.items.length > this.heightMap.length)) {
 						this.heightMap = current.items.map(() => current.itemHeight);
 					}
@@ -86,9 +86,7 @@
 
 		methods: {
 			initialise() {
-				const { items, itemHeight } = this.get();
-				const { viewport } = this.refs;
-				const viewportHeight = viewport.offsetHeight;
+				const { items, itemHeight, viewportHeight } = this.get();
 
 				if (itemHeight) {
 					this.heightMap = items.map(item => itemHeight);
@@ -121,8 +119,8 @@
 			},
 
 			refresh() {
-				const { items, start, end, itemHeight } = this.get();
-				const { offsetHeight, scrollTop } = this.refs.viewport;
+				const { items, start, end, itemHeight, viewportHeight } = this.get();
+				const { scrollTop } = this.refs.viewport;
 
 				let paddingTop = 0;
 				let offset = 0;
@@ -146,7 +144,7 @@
 				const newStart = i++;
 
 				for (; i < items.length; i += 1) {
-					if (offset >= scrollTop + offsetHeight) break;
+					if (offset >= scrollTop + viewportHeight) break;
 					offset += this.heightMap[i];
 				}
 
