@@ -1,5 +1,9 @@
 # svelte-virtual-list changelog
 
+## 2.2.0
+
+* Update when viewport changes size ([#3](https://github.com/sveltejs/svelte-virtual-list/issues/3))
+
 ## 2.1.2
 
 * Compensate for unexpected heights when scrolling up
