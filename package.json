@@ -14,17 +14,17 @@
     "pretest": "npm run build"
   },
   "devDependencies": {
-    "port-authority": "^1.0.3",
-    "puppeteer": "^1.2.0",
-    "rollup": "^0.58.2",
-    "rollup-plugin-commonjs": "^9.1.0",
-    "rollup-plugin-node-resolve": "^3.3.0",
-    "rollup-plugin-svelte": "^4.1.0",
-    "serve": "^6.5.3",
-    "svelte": "^2.1.0",
+    "port-authority": "^1.0.5",
+    "puppeteer": "^1.9.0",
+    "rollup": "^0.66.6",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-svelte": "^4.3.2",
+    "sirv": "^0.2.2",
+    "svelte": "^2.13.5",
     "tap-diff": "^0.1.1",
-    "tap-dot": "^1.0.5",
-    "tape-modern": "^1.0.0"
+    "tap-dot": "^2.0.0",
+    "tape-modern": "^1.1.1"
   },
   "repository": "https://github.com/sveltejs/svelte-virtual-list",
   "author": "Rich Harris",

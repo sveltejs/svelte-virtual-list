@@ -48,7 +48,7 @@ function normalize(html) {
 	const div = document.createElement('div');
 	div.innerHTML = html
 		.replace(/<!--.+?-->/g, '')
-		.replace(/svelte-ref-\w+=""/g, '')
+		.replace(/svelte-ref-\w+/g, '')
 		.replace(/\s*svelte-\w+\s*/g, '')
 		.replace(/class=""/g, '')
 		.replace(/>\s+/g, '>')
