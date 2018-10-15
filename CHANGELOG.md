@@ -1,5 +1,10 @@
 # svelte-virtual-list changelog
 
+## 2.2.1
+
+* Rename `viewportHeight` to `_viewportHeight`
+* Initialise `_viewportHeight` to avoid missing data warning
+
 ## 2.2.0
 
 * Update when viewport changes size ([#3](https://github.com/sveltejs/svelte-virtual-list/issues/3))

@@ -1,4 +1,4 @@
-<div ref:viewport on:scroll='refresh()' style='height: {height};' bind:offsetHeight="viewportHeight">
+<div ref:viewport on:scroll='refresh()' style='height: {height};' bind:offsetHeight="_viewportHeight">
 	<div ref:container style='padding-top: {_top}px; padding-bottom: {_bottom}px;'>
 		{#each visible as item (item.index)}
 			<div class='row'>
@@ -23,7 +23,16 @@
 <script>
 	export default {
 		data() {
-			return { start: 0, end: 0, height: '100%', itemHeight: 0, _top: 0, _bottom: 0, _props: {} };
+			return {
+				start: 0,
+				end: 0,
+				height: '100%',
+				itemHeight: 0,
+				_viewportHeight: 0,
+				_top: 0,
+				_bottom: 0,
+				_props: {}
+			};
 		},
 
 		computed: {
@@ -55,7 +64,7 @@
 			}
 
 			this.on('state', ({ changed, previous, current }) => {
-				if (changed.items || changed.height || changed.itemHeight || changed.viewportHeight) {
+				if (changed.items || changed.height || changed.itemHeight || changed._viewportHeight) {
 					if (current.itemHeight && (changed.itemHeight || current.items.length > this.heightMap.length)) {
 						this.heightMap = current.items.map(() => current.itemHeight);
 					}
@@ -87,19 +96,19 @@
 
 		methods: {
 			initialise() {
-				const { items, itemHeight, viewportHeight } = this.get();
+				const { items, itemHeight, _viewportHeight } = this.get();
 
 				if (itemHeight) {
 					this.heightMap = items.map(item => itemHeight);
 					this.set({
-						end: Math.min(items.length, Math.ceil(viewportHeight / itemHeight)),
+						end: Math.min(items.length, Math.ceil(_viewportHeight / itemHeight)),
 						_bottom: items.length * itemHeight
 					});
 				} else {
 					let height = 0;
 					let i = 0;
 
-					while (height < viewportHeight && i < items.length) {
+					while (height < _viewportHeight && i < items.length) {
 						this.set({ end: i + 1 });
 
 						const rowHeight = this.heightMap[i] = this.rows[i].offsetHeight;
@@ -120,7 +129,7 @@
 			},
 
 			refresh() {
-				const { items, start, end, itemHeight, viewportHeight } = this.get();
+				const { items, start, end, itemHeight, _viewportHeight } = this.get();
 				const { scrollTop } = this.refs.viewport;
 
 				let paddingTop = 0;
@@ -145,7 +154,7 @@
 				const newStart = i++;
 
 				for (; i < items.length; i += 1) {
-					if (offset >= scrollTop + viewportHeight) break;
+					if (offset >= scrollTop + _viewportHeight) break;
 					offset += this.heightMap[i];
 				}
 
