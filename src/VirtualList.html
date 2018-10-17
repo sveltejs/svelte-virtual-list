@@ -2,7 +2,7 @@
 	<div ref:container style='padding-top: {_top}px; padding-bottom: {_bottom}px;'>
 		{#each visible as item (item.index)}
 			<div class='row'>
-				<svelte:component this={component} {..._props} {...item.data} />
+				<svelte:component this={component} {..._props} {...item.data} i={item.index} />
 			</div>
 		{/each}
 	</div>
