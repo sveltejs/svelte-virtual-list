@@ -4,6 +4,8 @@
   "description": "A <VirtualList> component for Svelte apps",
   "svelte": "VirtualList.html",
   "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -cw",
     "prepublishOnly": "npm test",
     "test": "node test/runner.js",
     "test:browser": "npm run build && serve test/public",
