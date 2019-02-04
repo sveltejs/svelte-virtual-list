@@ -1,0 +1,12 @@
+<script>
+	import VirtualList from '../../VirtualList.html';
+	import Row from './Row.html';
+
+	export let items = [];
+	export let height = '100px';
+	export let itemHeight;
+</script>
+
+<VirtualList {height} {items} {itemHeight} let:item>
+	<Row text={item.text} height={item.height}/>
+</VirtualList>

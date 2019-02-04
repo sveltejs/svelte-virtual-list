@@ -1,348 +1,222 @@
-import svelte from 'svelte';
-import VirtualList from '../..';
+import App from './App.html';
+import { normalize, sleep } from './utils.js';
 import { assert, test, done } from 'tape-modern';
 
 // setup
 const target = document.querySelector('main');
 
-function indent(node, spaces) {
-	if (node.childNodes.length === 0) return;
-
-	if (node.childNodes.length > 1 || node.childNodes[0].nodeType !== 3) {
-		const first = node.childNodes[0];
-		const last = node.childNodes[node.childNodes.length - 1];
-
-		const head = `\n${spaces}  `;
-		const tail = `\n${spaces}`;
-
-		if (first.nodeType === 3) {
-			first.data = `${head}${first.data}`;
-		} else {
-			node.insertBefore(document.createTextNode(head), first);
-		}
-
-		if (last.nodeType === 3) {
-			last.data = `${last.data}${tail}`;
-		} else {
-			node.appendChild(document.createTextNode(tail));
-		}
-
-		let lastType = null;
-		for (let i = 0; i < node.childNodes.length; i += 1) {
-			const child = node.childNodes[i];
-			if (child.nodeType === 1) {
-				indent(node.childNodes[i], `${spaces}  `);
-
-				if (lastType === 1) {
-					node.insertBefore(document.createTextNode(head), child);
-					i += 1;
-				}
-			}
-
-			lastType = child.nodeType;
-		}
-	}
-}
-
-function normalize(html) {
-	const div = document.createElement('div');
-	div.innerHTML = html
-		.replace(/<!--.+?-->/g, '')
-		.replace(/<object.+\/object>/g, '')
-		.replace(/svelte-ref-\w+/g, '')
-		.replace(/\s*svelte-\w+\s*/g, '')
-		.replace(/class=""/g, '')
-		.replace(/>\s+/g, '>')
-		.replace(/\s+</g, '<');
-
-	indent(div, '');
-
-	div.normalize();
-	return div.innerHTML;
-}
-
-function wait(ms) {
-	return new Promise(f => setTimeout(f, ms));
-}
-
 assert.htmlEqual = (a, b, msg) => {
-	assert.equal(normalize(a), normalize(b));
+	assert.equal(normalize(a), normalize(b), msg);
 };
 
 // tests
-test('with no data, creates two <div> elements', t => {
-	const list = new VirtualList({
-		target,
-		data: {
-			items: [],
-			component: null
-		}
+test('with no data, creates two <div> elements', async t => {
+	const app = new App({
+		target
 	});
 
 	t.htmlEqual(target.innerHTML, `
-		<div style='height: 100%;'>
-			<div style="padding-top: 0px; padding-bottom: 0px;"></div>
-		</div>
+		<svelte-virtual-list-viewport style="height: 100px;">
+			<svelte-virtual-list-contents style="padding-top: 0px; padding-bottom: 0px;"></svelte-virtual-list-contents>
+		</svelte-virtual-list-viewport>
 	`);
 
-	list.destroy();
+	app.$destroy();
 });
 
-test('allows height to be specified', t => {
-	const list = new VirtualList({
+test('allows height to be specified', async t => {
+	const app = new App({
 		target,
-		data: {
-			items: [],
-			component: null,
+		props: {
 			height: '150px'
 		}
 	});
 
-	const div = target.firstElementChild;
+	const el = target.firstElementChild;
 
-	t.equal(getComputedStyle(div).height, '150px');
+	t.equal(getComputedStyle(el).height, '150px');
 
-	list.set({ height: '50%' });
-	t.equal(getComputedStyle(div).height, '250px');
+	app.height = '50%';
+	t.equal(getComputedStyle(el).height, '250px');
 
-	list.destroy();
+	app.$destroy();
 });
 
-test('allows item height to be specified', t => {
-	const Row = svelte.create(`
-		<span>{foo}</span>
-	`);
-
-	const list = new VirtualList({
+test('allows item height to be specified', async t => {
+	const app = new App({
 		target,
-		data: {
-			items: [{ foo: 'bar' }, { foo: 'bar' }, { foo: 'bar' }, { foo: 'bar' }],
-			component: null,
+		props: {
+			items: [{ text: 'bar' }, { text: 'bar' }, { text: 'bar' }, { text: 'bar' }],
 			height: '150px',
 			itemHeight: 100
 		}
 	});
 
-	const div = target.firstElementChild;
+	const el = target.firstElementChild;
 
-	t.equal(div.getElementsByClassName('row').length, 2);
+	await sleep(1);
+	t.equal(el.getElementsByTagName('svelte-virtual-list-row').length, 2);
 
-	list.set({ itemHeight: 50 });
+	app.itemHeight = 50;
 
-	t.equal(div.getElementsByClassName('row').length, 3);
+	await sleep(1);
+	t.equal(el.getElementsByTagName('svelte-virtual-list-row').length, 3);
 
-	list.destroy();
+	app.$destroy();
 });
 
-test('props are passed to child component', t => {
-	const Row = svelte.create(`
-		<span>{foo}</span>
-		<span>{baz}</span>
-		<span>{items}</span> <!-- should be undefined -->
-	`);
-
-	const list = new VirtualList({
+test('updates when items change', async t => {
+	const app = new App({
 		target,
-		data: {
-			items: [{ foo: 'bar'}],
-			component: Row,
-			baz: 'qux'
-		}
-	});
-
-	t.htmlEqual(target.innerHTML, `
-		<div style='height: 100%;'>
-			<div style="padding-top: 0px; padding-bottom: 0px;">
-				<div class="row">
-					<span>bar</span>
-					<span>qux</span>
-					<span>undefined</span>
-				</div>
-			</div>
-		</div>
-	`);
-
-	list.set({ baz: 'changed' });
-
-	t.htmlEqual(target.innerHTML, `
-		<div style='height: 100%;'>
-			<div style="padding-top: 0px; padding-bottom: 0px;">
-				<div class="row">
-					<span>bar</span>
-					<span>changed</span>
-					<span>undefined</span>
-				</div>
-			</div>
-		</div>
-	`);
-
-	list.destroy();
-});
-
-test('updates when items change', t => {
-	const Row = svelte.create(`
-		<div style="height: 80px;">{foo}</div>
-	`);
-
-	const list = new VirtualList({
-		target,
-		data: {
-			items: [{ foo: 'bar'}],
-			component: Row,
+		props: {
+			items: [{ text: 'bar'}],
 			height: '100px'
 		}
 	});
 
+	await sleep(1);
+
 	t.htmlEqual(target.innerHTML, `
-		<div style='height: 100px;'>
-			<div style="padding-top: 0px; padding-bottom: 0px;">
-				<div class="row">
+		<svelte-virtual-list-viewport style='height: 100px;'>
+			<svelte-virtual-list-contents style="padding-top: 0px; padding-bottom: 0px;">
+				<svelte-virtual-list-row>
 					<div style="height: 80px;">bar</div>
-				</div>
-			</div>
-		</div>
+				</svelte-virtual-list-row>
+			</svelte-virtual-list-contents>
+		</svelte-virtual-list-viewport>
 	`);
 
-	list.set({
-		items: [{ foo: 'bar'}, { foo: 'baz'}, { foo: 'qux'}]
-	});
+	app.items = [{ text: 'bar'}, { text: 'baz'}, { text: 'qux'}];
+
+	await sleep(1);
 
 	t.htmlEqual(target.innerHTML, `
-		<div style='height: 100px;'>
-			<div style="padding-top: 0px; padding-bottom: 80px;">
-				<div class="row">
+		<svelte-virtual-list-viewport style='height: 100px;'>
+			<svelte-virtual-list-contents style="padding-top: 0px; padding-bottom: 80px;">
+				<svelte-virtual-list-row>
 					<div style="height: 80px;">bar</div>
-				</div>
+				</svelte-virtual-list-row>
 
-				<div class="row">
+				<svelte-virtual-list-row>
 					<div style="height: 80px;">baz</div>
-				</div>
-			</div>
-		</div>
+				</svelte-virtual-list-row>
+			</svelte-virtual-list-contents>
+		</svelte-virtual-list-viewport>
 	`);
 
-	list.destroy();
+	app.$destroy();
 });
 
-test('updates when items change from an empty list', t => {
-	const Row = svelte.create(`
-		<div style="height: 80px;">{foo}</div>
-	`);
-
-	const list = new VirtualList({
+test('updates when items change from an empty list', async t => {
+	const app = new App({
 		target,
-		data: {
+		props: {
 			items: [],
-			component: Row,
 			height: '100px'
 		}
 	});
 
+	await sleep(1);
+
 	t.htmlEqual(target.innerHTML, `
-		<div style='height: 100px;'>
-			<div style="padding-top: 0px; padding-bottom: 0px;"></div>
-		</div>
+		<svelte-virtual-list-viewport style='height: 100px;'>
+			<svelte-virtual-list-contents style="padding-top: 0px; padding-bottom: 0px;"></svelte-virtual-list-contents>
+		</svelte-virtual-list-viewport>
 	`);
 
-	list.set({
-		items: [{ foo: 'bar'}, { foo: 'baz'}, { foo: 'qux'}]
-	});
+	app.items = [{ text: 'bar'}, { text: 'baz'}, { text: 'qux'}];
+	await sleep(1);
 
 	t.htmlEqual(target.innerHTML, `
-		<div style='height: 100px;'>
-			<div style="padding-top: 0px; padding-bottom: 80px;">
-				<div class="row">
+		<svelte-virtual-list-viewport style='height: 100px;'>
+			<svelte-virtual-list-contents style="padding-top: 0px; padding-bottom: 80px;">
+				<svelte-virtual-list-row>
 					<div style="height: 80px;">bar</div>
-				</div>
+				</svelte-virtual-list-row>
 
-				<div class="row">
+				<svelte-virtual-list-row>
 					<div style="height: 80px;">baz</div>
-				</div>
-			</div>
-		</div>
+				</svelte-virtual-list-row>
+			</svelte-virtual-list-contents>
+		</svelte-virtual-list-viewport>
 	`);
 
-	list.destroy();
+	app.$destroy();
 });
 
 test('handles unexpected height changes when scrolling up', async t => {
-	const Row = svelte.create(`
-		<div style="height: {rowHeight}px;">test</div>
-	`);
-
-	const list = new VirtualList({
+	const app = new App({
 		target,
-		data: {
-			items: Array(20).fill().map(() => ({})),
-			component: Row,
-			height: '500px',
-			rowHeight: 50
+		props: {
+			items: Array(20).fill().map(() => ({ height: 50 })),
+			height: '500px'
 		}
 	});
 
-	const { viewport } = list.refs;
+	await sleep(1);
+
+	const viewport = target.querySelector('svelte-virtual-list-viewport');
 
 	await scroll(viewport, 500);
 	assert.equal(viewport.scrollTop, 500);
 
-	list.set({ rowHeight: 100 });
+	app.items = Array(20).fill().map(() => ({ height: 100 }));
 	await scroll(viewport, 475);
 	assert.equal(viewport.scrollTop, 525);
 
-	list.destroy();
+	app.$destroy();
 });
 
 // This doesn't seem to work inside puppeteer...
 test.skip('handles viewport resizes', async t => {
-	const Row = svelte.create(`
-		<div style="height: 80px;">{foo}</div>
-	`);
-
 	target.style.height = '50px';
 
-	const list = new VirtualList({
+	const app = new App({
 		target,
-		data: {
+		props: {
 			items: [{ foo: 'bar'}, { foo: 'baz'}, { foo: 'qux'}],
-			component: Row,
 			height: '100%'
 		}
 	});
 
 	t.htmlEqual(target.innerHTML, `
-		<div style='height: 100%;'>
-			<div style="padding-top: 0px; padding-bottom: 160px;">
-				<div class="row">
+		<svelte-virtual-list-viewport style='height: 100%;'>
+			<svelte-virtual-list-contents style="padding-top: 0px; padding-bottom: 160px;">
+				<svelte-virtual-list-row>
 					<div style="height: 80px;">bar</div>
-				</div>
-			</div>
-		</div>
+				</svelte-virtual-list-row>
+			</svelte-virtual-list-contents>
+		</svelte-virtual-list-viewport>
 	`);
 
 	target.style.height = '200px';
 
 	t.htmlEqual(target.innerHTML, `
-		<div style='height: 100%;'>
-			<div style="padding-top: 0px; padding-bottom: 0px;">
-				<div class="row">
+		<svelte-virtual-list-viewport style='height: 100%;'>
+			<svelte-virtual-list-contents style="padding-top: 0px; padding-bottom: 0px;">
+				<svelte-virtual-list-row>
 					<div style="height: 80px;">bar</div>
-				</div>
+				</svelte-virtual-list-row>
 
-				<div class="row">
+				<svelte-virtual-list-row>
 					<div style="height: 80px;">baz</div>
-				</div>
+				</svelte-virtual-list-row>
 
-				<div class="row">
+				<svelte-virtual-list-row>
 					<div style="height: 80px;">qux</div>
-				</div>
-			</div>
-		</div>
+				</svelte-virtual-list-row>
+			</svelte-virtual-list-contents>
+		</svelte-virtual-list-viewport>
 	`);
 
-	list.destroy();
+	app.$destroy();
 });
 
 function scroll(element, y) {
+	if (!element || !element.addEventListener) {
+		throw new Error('???');
+	}
+
 	return new Promise(fulfil => {
 		element.addEventListener('scroll', function handler() {
 			element.removeEventListener('scroll', handler);
@@ -350,6 +224,8 @@ function scroll(element, y) {
 		});
 
 		element.scrollTo(0, y);
+
+		setTimeout(fulfil, 100);
 	});
 }
 
