@@ -1,0 +1,14 @@
+{
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 9,
+    "sourceType": "module"
+  },
+  "plugins": ["svelte3"],
+  "settings": {
+    "svelte3/extensions": ["html"]
+  },
+  "env": {
+    "browser": true
+  }
+}

@@ -5,13 +5,11 @@ import pkg from './package.json';
 
 export default [
 	{
-		input: 'src/VirtualList.html',
-		output: [
-			{ file: pkg.module, 'format': 'es' },
-			{ file: pkg.main, 'format': 'umd', name: 'VirtualList' }
-		],
+		input: 'test/src/index.js',
+		output: { file: 'test/public/bundle.js', 'format': 'iife' },
 		plugins: [
 			resolve(),
+			commonjs(),
 			svelte()
 		]
 	},
