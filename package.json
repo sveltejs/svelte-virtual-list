@@ -2,6 +2,7 @@
   "name": "@sveltejs/svelte-virtual-list",
   "version": "2.2.1",
   "description": "A <VirtualList> component for Svelte apps",
+  "main": "VirtualList.html",
   "svelte": "VirtualList.html",
   "scripts": {
     "build": "rollup -c",

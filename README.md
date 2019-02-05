@@ -12,40 +12,23 @@ yarn add @sveltejs/svelte-virtual-list
 ## Usage
 
 ```html
-<VirtualList items={things} component={RowComponent} />
-
 <script>
   import VirtualList from '@sveltejs/svelte-virtual-list';
-  import RowComponent from './RowComponent.html';
 
-  export default {
-    components: { VirtualList },
-
-    data() {
-      return {
-        things: [
-          // these can be any values you like
-          { name: 'one', number: 1 },
-          { name: 'two', number: 2 },
-          { name: 'three', number: 3 },
-          // ...
-          { name: 'six thousand and ninety-two', number: 6092 }
-        ],
-        RowComponent
-      };
-    }
-  };
+  const things = [
+    // these can be any values you like
+    { name: 'one', number: 1 },
+    { name: 'two', number: 2 },
+    { name: 'three', number: 3 },
+    // ...
+    { name: 'six thousand and ninety-two', number: 6092 }
+  ];
 </script>
-```
 
-The component constructor you supply to `<VirtualList>` will be instantiated for each visible member of `items`:
-
-```html
-<!-- RowComponent.html -->
-<div>
-  <strong>{number}</strong>
-  <span>{name}</span>
-</div>
+<VirtualList items={things} let:item>
+  <!-- this will be rendered for each currently visible item -->
+  <p>{item.number}: {item.name}</p>
+</VirtualList>
 ```
 
 
@@ -54,37 +37,35 @@ The component constructor you supply to `<VirtualList>` will be instantiated for
 You can track which rows are visible at any given by binding to the `start` and `end` values:
 
 ```html
-<VirtualList items={things} component={RowComponent} bind:start bind:end />
+<VirtualList items={things} bind:start bind:end>
+  <p>{item.number}: {item.name}</p>
+</VirtualList>
 
 <p>showing {start}-{end} of {things.length} rows</p>
 ```
 
-You can rename them with e.g. `bind:start=a bind:end=b`.
+You can rename them with e.g. `bind:start={a} bind:end={b}`.
+
+
+## `height`
+
+By default, the `<VirtualList>` component will fill the vertical space of its container. You can specify a different height by passing any CSS length:
+
+```html
+<VirtualList height="500px" items={things} let:item>
+  <p>{item.number}: {item.name}</p>
+</VirtualList>
+```
 
 
 ## `itemHeight`
 
-You can optimize initial display and scrolling when the height of items is known in advance.
+You can optimize initial display and scrolling when the height of items is known in advance. This should be a number representing a pixel value.
 
 ```html
-<VirtualList items={things} component={RowComponent} itemHeight={48} />
-```
-
-
-## Additional properties
-
-You can add arbitrary properties to `<VirtualList>` and they will be forwarded to the rows:
-
-```html
-<VirtualList class="funky" answer={42} items={things} component={RowComponent} />
-```
-
-```html
-<!-- RowComponent.html -->
-<div class="{number === answer ? 'the-answer' : ''}">
-  <strong>{number}</strong>
-  <span>{name}</span>
-</div>
+<VirtualList itemHeight={48} items={things} let:item>
+  <p>{item.number}: {item.name}</p>
+</VirtualList>
 ```
 
 
