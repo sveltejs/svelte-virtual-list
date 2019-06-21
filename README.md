@@ -1,4 +1,4 @@
-# svelte-virtual-list ([demo](https://svelte.technology/repl?version=2&gist=f5a127d9c21f529016d434dcbe405c3f))
+# svelte-virtual-list ([demo](https://svelte.dev/repl/f78ddd84a1a540a9a40512df39ef751b))
 
 A virtual list component for Svelte apps. Instead of rendering all your data, `<VirtualList>` just renders the bits that are visible, keeping your page nice and light.
 
