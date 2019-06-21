@@ -1,5 +1,9 @@
 # svelte-virtual-list changelog
 
+## 3.0.0
+
+* Update for Svelte 3
+
 ## 2.2.1
 
 * Rename `viewportHeight` to `_viewportHeight`

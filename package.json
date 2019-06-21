@@ -1,9 +1,9 @@
 {
   "name": "@sveltejs/svelte-virtual-list",
-  "version": "3.0.0-alpha.1",
+  "version": "3.0.0",
   "description": "A <VirtualList> component for Svelte apps",
-  "main": "VirtualList.html",
-  "svelte": "VirtualList.html",
+  "main": "VirtualList.svelte",
+  "svelte": "VirtualList.svelte",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -cw",
@@ -11,7 +11,7 @@
     "test": "node test/runner.js",
     "test:browser": "npm run build && serve test/public",
     "pretest": "npm run build",
-    "lint": "eslint src/VirtualList.html"
+    "lint": "eslint src/VirtualList.svelte"
   },
   "devDependencies": {
     "eslint": "^5.12.1",

@@ -1,6 +1,6 @@
 <script>
-	import VirtualList from '../../VirtualList.html';
-	import Row from './Row.html';
+	import VirtualList from '../../VirtualList.svelte';
+	import Row from './Row.svelte';
 
 	export let items = [];
 	export let height = '100px';

@@ -1,4 +1,4 @@
-import App from './App.html';
+import App from './App.svelte';
 import { normalize, sleep } from './utils.js';
 import { assert, test, done } from 'tape-modern';
 
