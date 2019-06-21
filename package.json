@@ -1,27 +1,29 @@
 {
   "name": "@sveltejs/svelte-virtual-list",
-  "version": "2.2.1",
+  "version": "3.0.0-alpha.1",
   "description": "A <VirtualList> component for Svelte apps",
-  "svelte": "src/VirtualList.html",
-  "module": "index.mjs",
-  "main": "index.js",
+  "main": "VirtualList.html",
+  "svelte": "VirtualList.html",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -cw",
     "prepublishOnly": "npm test",
     "test": "node test/runner.js",
     "test:browser": "npm run build && serve test/public",
-    "pretest": "npm run build"
+    "pretest": "npm run build",
+    "lint": "eslint src/VirtualList.html"
   },
   "devDependencies": {
+    "eslint": "^5.12.1",
+    "eslint-plugin-svelte3": "git+https://github.com/sveltejs/eslint-plugin-svelte3.git",
     "port-authority": "^1.0.5",
     "puppeteer": "^1.9.0",
-    "rollup": "^0.66.6",
+    "rollup": "^1.1.2",
     "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-node-resolve": "^3.4.0",
-    "rollup-plugin-svelte": "^4.3.2",
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-svelte": "^5.0.1",
     "sirv": "^0.2.2",
-    "svelte": "^2.13.5",
+    "svelte": "^3.0.0-beta.2",
     "tap-diff": "^0.1.1",
     "tap-dot": "^2.0.0",
     "tape-modern": "^1.1.1"
