@@ -62,6 +62,9 @@
 		bottom = remaining * average_height;
 		height_map.length = items.length;
 
+		if (content_height < scrollTop) {
+			viewport.scrollTo(0, 0);
+		}
 	}
 
 	async function handle_scroll() {
