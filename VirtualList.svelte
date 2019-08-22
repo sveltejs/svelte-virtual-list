@@ -4,7 +4,7 @@
 	// props
 	export let items;
 	export let height = '100%';
-	export let itemHeight;
+	export let itemHeight = undefined;
 
 	let foo;
 
