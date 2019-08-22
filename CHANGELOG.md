@@ -1,5 +1,9 @@
 # svelte-virtual-list changelog
 
+## 3.0.1
+
+* Prevent missing `itemHeight` prop warning
+
 ## 3.0.0
 
 * Update for Svelte 3
