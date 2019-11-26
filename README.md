@@ -68,6 +68,16 @@ You can optimize initial display and scrolling when the height of items is known
 </VirtualList>
 ```
 
+## `itemKey`
+
+Allow the internal loop to use a specific key in your data, to help invalidate list items properly if the data changes.
+
+```html
+<VirtualList itemKey="number" items={things} let:item>
+  <p>{item.number}: {item.name}</p>
+</VirtualList>
+```
+
 
 ## Configuring webpack
 

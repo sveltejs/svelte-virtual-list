@@ -5,6 +5,7 @@
 	export let items;
 	export let height = '100%';
 	export let itemHeight = undefined;
+	export let itemKey = undefined;
 
 	let foo;
 
@@ -132,6 +133,15 @@
 		rows = contents.getElementsByTagName('svelte-virtual-list-row');
 		mounted = true;
 	});
+
+	// Use a key from the item data if specified
+	function getKey(row) {
+		if (itemKey && row.data.hasOwnProperty(itemKey)) {
+			return row.data[itemKey];
+		}
+
+		return row.index;
+	}
 </script>
 
 <style>
@@ -161,7 +171,7 @@
 		bind:this={contents}
 		style="padding-top: {top}px; padding-bottom: {bottom}px;"
 	>
-		{#each visible as row (row.index)}
+		{#each visible as row (getKey(row))}
 			<svelte-virtual-list-row>
 				<slot item={row.data}>Missing template</slot>
 			</svelte-virtual-list-row>
