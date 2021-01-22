@@ -11,7 +11,6 @@
 	// read-only, but visible to consumers via bind:start
 	export let start = 0;
 	export let end = 0;
-
 	// local state
 	let height_map = [];
 	let rows;
@@ -33,6 +32,12 @@
 	$: if (mounted) refresh(items, viewport_height, itemHeight);
 
 	async function refresh(items, viewport_height, itemHeight) {
+		const isStartOverflow = items.length < start
+		
+		if (isStartOverflow) {
+			await scrollToIndex(items.length - 1, {behavior: 'auto'})
+		}
+		
 		const { scrollTop } = viewport;
 
 		await tick(); // wait until the DOM is up to date
@@ -105,6 +110,7 @@
 		bottom = remaining * average_height;
 
 		// prevent jumping if we scrolled up into unknown territory
+		return
 		if (start < old_start) {
 			await tick();
 
@@ -127,6 +133,20 @@
 		// more. maybe we can just call handle_scroll again?
 	}
 
+	export async function scrollToIndex (index, opts) {
+		const {scrollTop} = viewport;
+		const itemsDelta = index - start;
+		const _itemHeight = itemHeight || average_height;
+		const distance = itemsDelta * _itemHeight;
+		opts = {
+			left: 0,
+			top: scrollTop + distance,
+			behavior: 'smooth',
+			...opts
+		};
+		viewport.scrollTo(opts);
+	}
+	
 	// trigger initial refresh
 	onMount(() => {
 		rows = contents.getElementsByTagName('svelte-virtual-list-row');
