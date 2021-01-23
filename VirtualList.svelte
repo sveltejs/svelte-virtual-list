@@ -5,9 +5,6 @@
 	export let items;
 	export let height = '100%';
 	export let itemHeight = undefined;
-
-	let foo;
-
 	// read-only, but visible to consumers via bind:start
 	export let start = 0;
 	export let end = 0;
@@ -108,25 +105,6 @@
 
 		while (i < items.length) height_map[i++] = average_height;
 		bottom = remaining * average_height;
-
-		// prevent jumping if we scrolled up into unknown territory
-		return
-		if (start < old_start) {
-			await tick();
-
-			let expected_height = 0;
-			let actual_height = 0;
-
-			for (let i = start; i < old_start; i +=1) {
-				if (rows[i - start]) {
-					expected_height += height_map[i];
-					actual_height += itemHeight || rows[i - start].offsetHeight;
-				}
-			}
-
-			const d = actual_height - expected_height;
-			viewport.scrollTo(0, scrollTop + d);
-		}
 
 		// TODO if we overestimated the space these
 		// rows would occupy we may need to add some
