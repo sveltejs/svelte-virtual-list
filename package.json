@@ -19,8 +19,6 @@
     "port-authority": "^1.0.5",
     "puppeteer": "^1.9.0",
     "rollup": "^1.1.2",
-    "rollup-plugin-commonjs": "^9.2.0",
-    "rollup-plugin-node-resolve": "^4.0.0",
     "rollup-plugin-svelte": "^5.0.1",
     "sirv": "^0.2.2",
     "svelte": "^3.0.0-beta.2",
@@ -38,5 +36,9 @@
     "src",
     "index.mjs",
     "index.js"
-  ]
+  ],
+  "dependencies": {
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.0"
+  }
 }
