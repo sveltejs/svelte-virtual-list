@@ -4,6 +4,7 @@
   "description": "A <VirtualList> component for Svelte apps",
   "main": "VirtualList.svelte",
   "svelte": "VirtualList.svelte",
+  "types": "index.d.ts",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -cw",
@@ -14,6 +15,8 @@
     "lint": "eslint src/VirtualList.svelte"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
     "eslint": "^5.12.1",
     "eslint-plugin-svelte3": "git+https://github.com/sveltejs/eslint-plugin-svelte3.git",
     "port-authority": "^1.0.5",
@@ -35,10 +38,7 @@
   "files": [
     "src",
     "index.mjs",
-    "index.js"
-  ],
-  "dependencies": {
-    "@rollup/plugin-commonjs": "^19.0.0",
-    "@rollup/plugin-node-resolve": "^13.0.0"
-  }
+    "index.js",
+    "index.d.ts"
+  ]
 }
