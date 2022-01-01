@@ -27,7 +27,7 @@
 
 	let previousContents = []
 	$: items, (()=>{
-		if (mounted && (items != previousContents && items.length)) {
+		if (mounted && items.length != previousContents.length && items.length) {
 			keep = items
 			viewport.scrollTo(0,0)
 		}
