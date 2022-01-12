@@ -23,6 +23,14 @@
 	let bottom = 0;
 	let average_height;
 
+	let previousContents = []
+	$: items, (()=>{
+		if (mounted && items.length != previousContents.length && items.length) {
+			previousContents = items
+			viewport.scrollTo(0,0)
+		}
+	})()
+	
 	$: visible = items.slice(start, end).map((data, i) => {
 		return { index: i + start, data };
 	});
