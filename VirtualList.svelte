@@ -1,5 +1,7 @@
 <script>
-	import { onMount, tick } from 'svelte';
+	import { onMount, tick, createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
 
 	// props
 	export let items;
@@ -62,7 +64,7 @@
 
 	}
 
-	async function handle_scroll() {
+	async function handle_scroll(event) {
 		const { scrollTop } = viewport;
 
 		const old_start = start;
@@ -119,6 +121,8 @@
 			const d = actual_height - expected_height;
 			viewport.scrollTo(0, scrollTop + d);
 		}
+
+		dispatch('scroll', event);
 
 		// TODO if we overestimated the space these
 		// rows would occupy we may need to add some
