@@ -1,5 +1,5 @@
 <script>
-	import { onMount, tick } from 'svelte';
+	import { onMount, tick, onDestroy } from 'svelte';
 
 	// props
 	export let items;
@@ -34,6 +34,7 @@
 		const { scrollTop } = viewport;
 
 		await tick(); // wait until the DOM is up to date
+		if (!mounted) return;
 
 		let content_height = top - scrollTop;
 		let i = start;
@@ -44,6 +45,7 @@
 			if (!row) {
 				end = i + 1;
 				await tick(); // render the newly visible row
+				if (!mounted) return;
 				row = rows[i - start];
 			}
 
@@ -129,6 +131,11 @@
 	onMount(() => {
 		rows = contents.getElementsByTagName('svelte-virtual-list-row');
 		mounted = true;
+	});
+
+	// mark as unmounted for pending tasks
+	onDestroy(() => {
+		mounted = false;
 	});
 </script>
 
