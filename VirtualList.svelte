@@ -59,6 +59,7 @@
 
 		bottom = remaining * average_height;
 		height_map.length = items.length;
+		viewport.scrollTo(0, 0);
 
 	}
 
