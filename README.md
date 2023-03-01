@@ -68,6 +68,16 @@ You can optimize initial display and scrolling when the height of items is known
 </VirtualList>
 ```
 
+## `index`
+
+You can access the index of each item in the virtual list by using the `index` attribute:
+
+```html
+<VirtualList items={things} let:item let:index>
+  <p>{index}: {item.number} - {item.name}</p>
+</VirtualList>
+```
+
 
 ## Configuring webpack
 
